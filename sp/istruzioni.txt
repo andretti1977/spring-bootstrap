@@ -2,3 +2,4 @@
 - aggiungigli il pom fatto come da progetto (quello di base non mi esprime in json i dati) (minimo quello dello showcase, ma questo contiene anche jpa)
 - crea le classi WebAppConfig e Initializer e rimuovi folder di test che meta-inf che xml vari
 - configurato spring security per usare db
+- aggiunti @preauth
