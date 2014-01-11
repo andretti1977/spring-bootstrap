@@ -17,8 +17,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
@@ -27,7 +30,7 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 @EnableWebMvc //Enables to use Spring's annotations in the code
 @PropertySource("classpath:application.properties")
 @EnableJpaRepositories("com.ap.sp")
-public class WebAppConfig {
+public class WebAppConfig extends WebMvcConfigurerAdapter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(WebAppConfig.class);
 	
@@ -48,6 +51,11 @@ public class WebAppConfig {
 	@Resource
 	private Environment env;
 	
+	@Bean
+	public UserService userService() {
+		UserService us = new UserService();
+		return us;
+	}
 
 	@Bean
 	public UrlBasedViewResolver setupViewResolver() {
@@ -99,10 +107,26 @@ public class WebAppConfig {
 
 	@Bean
 	public JpaTransactionManager transactionManager() {
-		logger.info("jpa");
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 		return transactionManager;
 	}
 	
+	@Override
+	   public void addResourceHandlers(ResourceHandlerRegistry registry) 
+	   {
+	     registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+	   }
+	
+	@Override
+	  public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		logger.info("configureDefaultServletHandling");
+	    configurer.enable();
+	  }
+	
+	@Override
+    public void addInterceptors(InterceptorRegistry registry) {
+		logger.info("AGGIUNTA INTERCEPTORS");
+		registry.addInterceptor(new DemoInterceptor()).addPathPatterns("/**").excludePathPatterns("/all/**");
+    }
 }

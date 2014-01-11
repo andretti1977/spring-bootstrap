@@ -3,6 +3,7 @@ package com.ap.sp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -28,6 +29,9 @@ public class HomeController {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private UserService userService;
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -120,6 +124,90 @@ public class HomeController {
     	List<User> list = userRepository.findByUsername(username);
         
         return list.get(0);
+    }
+	
+	@ResponseBody
+    @RequestMapping(value="/getAllUsers", method=RequestMethod.GET)
+    public List<User> getAllUsers(@RequestParam(value="iter") boolean iter) {
+    	
+		List<User> list = new ArrayList<User>();
+		
+		if (iter) {
+			
+			Iterator<User> iterator = (userRepository.findAll()).iterator();
+			while (iterator.hasNext()) {
+				list.add(iterator.next());
+			}
+			
+		} else {
+			
+			logger.info("Ottengo lista con findAll modificato");
+			list = userRepository.findAll();
+			
+		}
+		
+		
+        
+        return list;
+    }
+	
+	@ResponseBody
+    @RequestMapping(value="/modifyUser/{username}", method=RequestMethod.GET)
+    public User modifyUser(@PathVariable String username) {
+    	
+    	List<User> list = userRepository.findByUsername(username);
+        
+    	User user = list.get(0);
+    	
+    	user.username = "VecchioJack";
+    	
+    	userRepository.save(user);
+    	
+        return list.get(0);
+    }
+	
+	@ResponseBody
+    @RequestMapping(value="/user29", method=RequestMethod.GET)
+    public User user29() {
+    	
+    	User user = userRepository.findOne(29);
+        
+    	user.username = "VecchioDavid";
+    	
+    	userRepository.save(user);
+    	
+        return user;
+    }
+	
+	@ResponseBody
+    @RequestMapping(value="/newuser29", method=RequestMethod.GET)
+    public User newuser29() {
+    	
+    	User user = new User();
+        
+    	user.username = "un29generatoacaso";
+    	user.password ="acaso";
+    	user.setId(29);
+    	
+    	userRepository.save(user);
+    	
+        return user;
+    }
+	
+	@ResponseBody
+    @RequestMapping(value="/getuser10", method=RequestMethod.GET)
+    public User getuser10() {
+    	
+    	User user = userService.getUserWithId10();
+    	
+        return user;
+    }
+	
+    @RequestMapping(value="/page", method=RequestMethod.GET)
+    public String page() {
+    	
+        return "altro/index";
+        
     }
 	
 }

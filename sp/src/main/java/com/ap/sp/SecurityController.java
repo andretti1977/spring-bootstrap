@@ -28,7 +28,6 @@ public class SecurityController {
 	private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
 	
 	
-	
 	@ExceptionHandler(AccessDeniedException.class)
 	@ResponseBody
 	public SecResponse handleCustomException(AccessDeniedException ex) {
@@ -88,8 +87,7 @@ public class SecurityController {
 		
 		return resp;
 	}
-	
-	
+
 	@Autowired
 	SecurityConfig sc;
 	
@@ -125,7 +123,5 @@ public class SecurityController {
 		
 		return resp;
 	}
-	
-	
 	
 }

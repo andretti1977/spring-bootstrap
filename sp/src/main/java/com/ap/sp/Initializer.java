@@ -19,7 +19,8 @@ public class Initializer implements WebApplicationInitializer {
 		AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
 		ctx.register(WebAppConfig.class);
 		ctx.register(SecurityConfig.class);//diventa fondamentale registrare qui la classe sennò aggiungendo l'enableglobalsecurity si generano eccezioni
-
+		
+		
 		ctx.setServletContext(servletContext);	
 
 		configureSpringSecurity(servletContext, ctx);
